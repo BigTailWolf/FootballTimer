@@ -44,11 +44,9 @@ class MainActivity : ComponentActivity() {
                     // call the function Timer
                     // and pass the values
                     // it is defined below.
-                    Timer(
+                    PlayClock(
                         totalTime = 40L * 1000L,
-                        handleColor = Color.Green,
                         inactiveBarColor = Color.DarkGray,
-                        activeBarColor = Color(0xFF37B900),
                         modifier = Modifier.size(200.dp)
                     )
                 }
@@ -60,19 +58,13 @@ class MainActivity : ComponentActivity() {
 // create a composable to
 // Draw arc and handle
 @Composable
-fun Timer(
-
+fun PlayClock(
     // total time of the timer
     totalTime: Long,
-
-    // circular handle color
-    handleColor: Color,
 
     // color of inactive bar / progress bar
     inactiveBarColor: Color,
 
-    // color of active bar
-    activeBarColor: Color,
     modifier: Modifier = Modifier,
 
     // set initial value to 1
@@ -125,7 +117,7 @@ fun Timer(
             )
             // draw the active arc with following parameters
             drawArc(
-                color = activeBarColor, // assign the color
+                color = getActiveColor(currentTime),
                 startAngle = -215f, // assign the start angle
                 sweepAngle = 250f * value, // reduce the sweep angle
                 // with the current value
@@ -145,7 +137,7 @@ fun Timer(
             drawPoints(
                 listOf(Offset(center.x + a, center.y + b)),
                 pointMode = PointMode.Points,
-                color = handleColor,
+                color = getActiveColor(currentTime),
                 strokeWidth = (strokeWidth * 3f).toPx(),
                 cap = StrokeCap.Round // make the pointer round
             )
@@ -193,6 +185,12 @@ fun Timer(
     }
 }
 
+private fun getActiveColor(playClockTime : Long): Color {
+    if (playClockTime > 25 * 1000L) return Color.Green
+    if (playClockTime > 10 * 1000L) return Color.Yellow
+    return Color.Red
+}
+
 @Preview(showBackground = false)
 @Composable
 fun DefaultPreview() {
@@ -202,11 +200,9 @@ fun DefaultPreview() {
         // call the function Timer
         // and pass the values
         // it is defined below.
-        Timer(
+        PlayClock(
             totalTime = 40L * 1000L,
-            handleColor = Color.Green,
             inactiveBarColor = Color.DarkGray,
-            activeBarColor = Color(0xFF37B900),
             modifier = Modifier.size(200.dp)
         )
     }
