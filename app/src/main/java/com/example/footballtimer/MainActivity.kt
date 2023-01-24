@@ -152,7 +152,7 @@ fun Timer(
         }
         // add value of the timer
         Text(
-            text = (currentTime / 1000L).toString(),
+            text = if (currentTime > 0) (currentTime / 1000L).toString() else "--",
             fontSize = 44.sp,
             fontWeight = FontWeight.Bold,
             color = Color.White
@@ -160,17 +160,23 @@ fun Timer(
         // create button to start or stop the timer
         Button(
             onClick = {
-                if(currentTime <= 0L) {
-                    currentTime = totalTime
-                    isTimerRunning = true
+                if (isTimerRunning) {
+                    currentTime = 0L
+                    isTimerRunning = false
                 } else {
-                    isTimerRunning = !isTimerRunning
+                    if (currentTime <= 0) {
+                        currentTime = totalTime
+                    } else {
+                        isTimerRunning = true
+                    }
                 }
             },
             modifier = Modifier.align(Alignment.BottomCenter),
             // change button color
             colors = ButtonDefaults.buttonColors(
-                backgroundColor = if (!isTimerRunning || currentTime <= 0L) {
+                backgroundColor = if (currentTime <= 0L) {
+                    Color.Yellow
+                } else if (!isTimerRunning) {
                     Color.Green
                 } else {
                     Color.Red
@@ -179,9 +185,9 @@ fun Timer(
         ) {
             Text(
                 // change the text of button based on values
-                text = if (isTimerRunning && currentTime >= 0L) "Stop"
-                else if (!isTimerRunning && currentTime >= 0L) "Start"
-                else "Restart"
+                text = if (isTimerRunning && currentTime > 0) "Snap"
+                else if (currentTime == totalTime) "Count"
+                else "Reset"
             )
         }
     }
